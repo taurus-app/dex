@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Taurus - Decentralized Exchange</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/taurus.css" rel="stylesheet">
+  <style>
+    body {
+      background: url('assets/backgrounds/starfield_bg.png') center/cover no-repeat fixed, var(--taurus-black);
+    }
+    .team-card {
+      transition: all 0.3s ease;
+      overflow: visible;
+      border-radius: 16px;
+      padding-top: 70px !important;
+      min-height: 450px;
+      margin-top: 60px;
+      position: relative;
+    }
+    .team-card:hover {
+      transform: translateY(-8px);
+    }
+    .team-avatar-container {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 120px;
+      z-index: 10;
+    }
+    .team-avatar {
+      width: 120px;
+      height: 120px;
+      border: 3px solid var(--taurus-gold);
+      border-radius: 50%;
+      padding: 3px;
+      background-color: var(--taurus-card);
+      transition: all 0.3s ease;
+      object-fit: cover;
+    }
+    .team-card:hover .team-avatar {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(240,185,11,0.4);
+    }
+    .team-card .text-center {
+      margin-top: -20px;
+    }
+    .milestone-item {
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 30px;
+    }
+    .milestone-item:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: var(--taurus-gold);
+      border-radius: 50%;
+    }
+    .milestone-item:after {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 16px;
+      width: 2px;
+      height: calc(100% + 14px);
+      background: var(--taurus-gold);
+    }
+    .milestone-item:last-child:after {
+      display: none;
+    }
+    .vision-card {
+      background: linear-gradient(135deg, rgba(30, 32, 38, 0.8), rgba(20, 21, 26, 0.9));
+      border-left: 4px solid var(--taurus-gold);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <img src="assets/logo/taurus_logo.png" alt="Taurus Logo" width="48" height="48" class="me-2 rounded-circle img-gold-border">
+        Taurus
+        <span class="badge bg-warning text-dark ms-2 fs-6">Beta</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="swap.html">Swap</a></li>
+          <li class="nav-item"><a class="nav-link" href="tokens.html">Tokens</a></li>
+          <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-5" style="background: linear-gradient(to bottom, rgba(12,14,20,0.8), rgba(12,14,20,0.95)), url('assets/backgrounds/starfield_bg.png') center/cover no-repeat">
+    <div class="container py-4 text-center">
+      <h1 class="display-3 gold-gradient mb-4 fade-in">Our Story</h1>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <p class="lead text-light mb-0 fade-in" style="animation-delay: 0.2s;">Discover the vision, team, and journey behind Taurus - the next generation of decentralized finance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brand Story & Vision -->
+  <main>
+    <section class="container py-5">
+      <div class="row align-items-center mb-5">
+        <div class="col-lg-7 fade-in">
+          <h2 class="section-title">The Taurus Journey</h2>
+          <p class="fs-5">Born from the vision of a decentralized future, Taurus was founded to empower individuals with true financial freedom. Inspired by the strength and stability of the Taurus constellation, our platform bridges the cosmos and finance, offering a secure, transparent, and elegant DeFi experience.</p>
+          <p>We believe in a world where everyone can trade, invest, and grow without boundaries. Our team of blockchain experts, financial analysts, and UX designers have come together to create a platform that combines cutting-edge technology with an intuitive user experience.</p>
+        </div>
+        <div class="col-lg-5 text-center fade-in" style="animation-delay: 0.3s;">
+          <img src="assets/logo/taurus_logo.png" alt="Taurus Logo" width="220" class="img-fluid rounded-circle img-gold-border">
+        </div>
+      </div>
+
+      <!-- Vision Cards -->
+      <div class="row g-4 mb-5">
+        <div class="col-12">
+          <h2 class="section-title fade-in" style="animation-delay: 0.4s;">Our Vision</h2>
+        </div>
+        <div class="col-md-4 fade-in" style="animation-delay: 0.5s;">
+          <div class="card vision-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-shield-lock fs-1 gold-gradient me-3"></i>
+              <h4 class="mb-0 gold-gradient">Security First</h4>
+            </div>
+            <p class="mb-0">We prioritize the security of user assets and data above all else, implementing robust security measures and regular audits.</p>
+          </div>
+        </div>
+        <div class="col-md-4 fade-in" style="animation-delay: 0.6s;">
+          <div class="card vision-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-people fs-1 gold-gradient me-3"></i>
+              <h4 class="mb-0 gold-gradient">Community Driven</h4>
+            </div>
+            <p class="mb-0">Our platform evolves based on community feedback and governance, ensuring that Taurus meets the real needs of its users.</p>
+          </div>
+        </div>
+        <div class="col-md-4 fade-in" style="animation-delay: 0.7s;">
+          <div class="card vision-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-globe fs-1 gold-gradient me-3"></i>
+              <h4 class="mb-0 gold-gradient">Global Access</h4>
+            </div>
+            <p class="mb-0">We're committed to making DeFi accessible to everyone, regardless of location or financial background.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Milestones -->
+      <div class="mb-5">
+        <h2 class="section-title fade-in" style="animation-delay: 0.8s;">Development Roadmap</h2>
+        <div class="row">
+          <div class="col-lg-8 offset-lg-2">
+            <div class="milestone-item fade-in" style="animation-delay: 0.9s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">2022: Concept & Research</h4>
+                <p class="mb-0">The Taurus concept was born from a team of blockchain enthusiasts who envisioned a more accessible and elegant DeFi platform. Initial research and market analysis shaped our core vision.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">2023: Development & Testing</h4>
+                <p class="mb-0">Our development team built the Taurus platform from the ground up, focusing on security, speed, and user experience. Extensive testing and auditing ensured a robust foundation.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.1s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">2024: Launch & Expansion</h4>
+                <p class="mb-0">Taurus officially launched to the public, bringing our vision of elegant, accessible DeFi to life. Our roadmap includes expanding token offerings, adding advanced trading features, and growing our global community.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.2s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q3 2025: MVP Launch</h4>
+                <p class="mb-0">Launch MVP version featuring intent input → aggregated routing execution → AI trend strategy recommendations. Integrate with mainstream DEX aggregators, supporting multi-chain swaps across EVM, Solana, and zkSync networks.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.3s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q4 2025: CopyTrade & Governance</h4>
+                <p class="mb-0">Launch CopyTrade module supporting address following, strategy copying, and portfolio tracking. Introduce incentive system and DAO governance ranking with reward mechanisms.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.4s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q1 2026: Strategy Marketplace</h4>
+                <p class="mb-0">Open strategy marketplace for community-submitted AI strategies and custom parameter templates. Launch Solver execution network with node bidding slot model.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.5s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q2-Q3 2026: Advanced Features</h4>
+                <p class="mb-0">Beta launch of on-chain US stock trading module with tokenized stock trading and compliant KYC integration. Deploy proprietary AI models to reduce OpenAI API dependency with local inference support.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.6s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q2-Q3 2026: Mobile Ecosystem</h4>
+                <p class="mb-0">Official release of Taurus mobile device with pre-installed Wallet, Strategy, and CopyTrade modules. Integrate mobile task system with DAO modules, creating a "hardware × strategy × governance" ecosystem loop.</p>
+              </div>
+            </div>
+            <div class="milestone-item fade-in" style="animation-delay: 1.7s;">
+              <div class="card p-4">
+                <h4 class="gold-gradient">Q4 2026: Ecosystem Expansion</h4>
+                <p class="mb-0">Full deployment of advanced CopyTrade features and comprehensive DAO governance system. Complete the transformation into a full-stack DeFi ecosystem with hardware integration and community-driven growth.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Section -->
+      <div>
+        <h2 class="section-title text-center fade-in" style="animation-delay: 1.3s;">Meet Our Team</h2>
+        <p class="text-center mb-5 fade-in" style="animation-delay: 1.4s;"></p>
+        <div class="row g-5 justify-content-center">
+          <div class="col-lg-4 col-md-6 fade-in" style="animation-delay: 1.5s;">
+            <div class="card team-card text-center p-4">
+              <div class="team-avatar-container">
+                <img src="assets/team/ceo_photo.png" alt="Alex Chen" class="team-avatar">
+              </div>
+              <div class="card-body">
+                <h4 class="card-title gold-gradient">Alex Chen</h4>
+                <h6 class="text-secondary mb-3">Founder & CEO</h6>
+                <p class="card-text">Visionary in DeFi and blockchain technology with over 10 years of experience in fintech innovation and cryptocurrency markets.</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-linkedin"></i></a>
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-twitter"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 fade-in" style="animation-delay: 1.6s;">
+            <div class="card team-card text-center p-4">
+              <div class="team-avatar-container">
+                <img src="assets/team/cto_photo.png" alt="Sophia Lee" class="team-avatar">
+              </div>
+              <div class="card-body">
+                <h4 class="card-title gold-gradient">Sophia Lee</h4>
+                <h6 class="text-secondary mb-3">CTO</h6>
+                <p class="card-text">Expert in smart contracts and blockchain security. Previously led development teams at major cryptocurrency exchanges and DeFi protocols.</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-linkedin"></i></a>
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-github"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 fade-in" style="animation-delay: 1.7s;">
+            <div class="card team-card text-center p-4">
+              <div class="team-avatar-container">
+                <img src="assets/team/coo_photo.png" alt="Michael Smith" class="team-avatar">
+              </div>
+              <div class="card-body">
+                <h4 class="card-title gold-gradient">Michael Smith</h4>
+                <h6 class="text-secondary mb-3">COO</h6>
+                <p class="card-text">Operations and community growth leader with extensive experience in scaling fintech startups and building engaged crypto communities.</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-linkedin"></i></a>
+                  <a href="#" class="text-secondary fs-5"><i class="bi bi-twitter"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center py-4">
+        <div>
+          <h5 class="gold-gradient mb-3">Taurus DEX</h5>
+          <p class="mb-0">The next generation of decentralized trading,<br>powered by blockchain technology and inspired by<br>the cosmos.</p>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="https://taurus-main.github.io/" target="_blank" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;" title="Main Site">
+            <i class="bi bi-house text-white"></i>
+          </a>
+          <a href="mailto:taurusdex@outlook.com" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;" title="Email">
+            <i class="bi bi-envelope text-white"></i>
+          </a>
+          <a href="https://x.com/Taurus_DEX" target="_blank" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;" title="Twitter/X">
+            <i class="bi bi-twitter text-white"></i>
+          </a>
+          <a href="https://github.com/taurus-main/taurus-main.github.io" target="_blank" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;" title="GitHub">
+            <i class="bi bi-github text-white"></i>
+          </a>
+        </div>
+      </div>
+      <hr class="border-secondary">
+      <div class="text-center">
+        <span>&copy; 2024 Taurus DEX. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
