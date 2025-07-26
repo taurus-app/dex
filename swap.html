@@ -19,7 +19,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: -20px auto;
+      margin: 20px auto;
       position: relative;
       z-index: 10;
       cursor: pointer;
@@ -38,6 +38,18 @@
     }
     .swap-info {
       color: #ffffff;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -108,18 +120,19 @@
               <h2 class="gold-gradient mb-0">Swap Tokens</h2>
               <p class="text-secondary">Fast, secure, decentralized</p>
             </div>
-            <form>
+            <form id="swap-form">
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label class="form-label gold-gradient">From</label>
-                  <span class="text-secondary small">Balance: 1.245 ETH</span>
+                  <span class="text-secondary small" id="from-balance">Balance: -- BNB</span>
                 </div>
                 <div class="input-group">
-                  <input type="number" class="form-control form-control-lg" placeholder="0.0" min="0" id="from-amount">
+                  <button class="btn btn-outline-secondary" type="button" id="max-btn" tabindex="-1">Max</button>
+                  <input type="text" class="form-control form-control-lg" placeholder="0.0" id="from-amount">
                   <button class="btn btn-dark token-select" type="button" id="from-token-select">
                     <div class="d-flex align-items-center">
-                      <img src="assets/icons/eth_logo.png" alt="ETH" width="24" height="24" class="me-2 rounded-circle" id="from-token-img">
-                      <span id="from-token-symbol">ETH</span>
+                      <img src="assets/icons/bnb_logo.png" alt="BNB" width="24" height="24" class="me-2 rounded-circle" id="from-token-img">
+                      <span id="from-token-symbol">BNB</span>
                       <i class="bi bi-chevron-down ms-2"></i>
                     </div>
                   </button>
@@ -133,14 +146,13 @@
               <div class="mb-4 mt-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label class="form-label gold-gradient">To</label>
-                  <span class="text-secondary small">Balance: 2500.00 USDT</span>
                 </div>
                 <div class="input-group">
-                  <input type="number" class="form-control form-control-lg" placeholder="0.0" min="0" id="to-amount">
+                  <input type="text" class="form-control form-control-lg" placeholder="0.0" id="to-amount" readonly>
                   <button class="btn btn-dark token-select" type="button" id="to-token-select">
                     <div class="d-flex align-items-center">
-                      <img src="assets/icons/usdt_logo.png" alt="USDT" width="24" height="24" class="me-2 rounded-circle" id="to-token-img">
-                      <span id="to-token-symbol">USDT</span>
+                      <img src="assets/icons/taurus_logo.png" alt="TAURUS" width="24" height="24" class="me-2 rounded-circle" id="to-token-img">
+                      <span id="to-token-symbol">TAURUS</span>
                       <i class="bi bi-chevron-down ms-2"></i>
                     </div>
                   </button>
@@ -150,7 +162,7 @@
               <div class="card mb-4 p-3" style="background: rgba(30, 32, 38, 0.5);">
                 <div class="d-flex justify-content-between mb-2">
                   <span class="text-secondary">Exchange Rate</span>
-                  <span id="exchange-rate" class="swap-info">1 ETH = 3,250.12 USDT</span>
+                  <span id="exchange-rate" class="swap-info">1 BNB = 0.0000 TAURUS</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                   <span class="text-secondary">Price Impact</span>
@@ -162,7 +174,9 @@
                 </div>
               </div>
               
-              <button type="submit" class="btn btn-gold w-100 py-3 fs-5">Swap Now</button>
+              <button type="submit" class="btn btn-gold w-100 py-3 fs-5" id="swap-btn">
+                <span id="swap-btn-text">Connecting...</span>
+              </button>
             </form>
           </div>
         </div>
@@ -170,21 +184,21 @@
           <div class="row g-4 mb-4">
             <div class="col-md-6 fade-in" style="animation-delay: 0.2s;">
               <div class="card text-center p-3">
-                <h5 class="card-title gold-gradient">ETH/USDT</h5>
-                <p class="card-text fs-3 fw-bold" id="eth-usdt-price">$3,250.12</p>
+                <h5 class="card-title gold-gradient">BNB/USDT</h5>
+                <p class="card-text fs-3 fw-bold" id="bnb-usdt-price">$420.00</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="badge bg-success">+1.2%</span>
-                  <a href="#" class="btn btn-sm btn-outline-warning">Trade</a>
+                  <button class="btn btn-sm btn-outline-warning" onclick="setBnbUsdtPair()">Trade</button>
                 </div>
               </div>
             </div>
             <div class="col-md-6 fade-in" style="animation-delay: 0.4s;">
               <div class="card text-center p-3">
-                <h5 class="card-title gold-gradient">BTC/USDT</h5>
-                <p class="card-text fs-3 fw-bold" id="btc-usdt-price">$48,900.00</p>
+                <h5 class="card-title gold-gradient">ETH/USDT</h5>
+                <p class="card-text fs-3 fw-bold" id="eth-usdt-price">$3,250.12</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="badge bg-danger">-0.8%</span>
-                  <a href="#" class="btn btn-sm btn-outline-warning">Trade</a>
+                  <button class="btn btn-sm btn-outline-warning" onclick="setEthUsdtPair()">Trade</button>
                 </div>
               </div>
             </div>
@@ -255,44 +269,435 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
   <script>
-    // Function to fetch cryptocurrency prices
-    async function fetchCryptoPrices() {
+    // ==================== CONFIGURATION ====================
+    const CONFIG = {
+      // Contract addresses
+      TAURUS_ADDRESS: '0x05008b299d880eeb424f1dd84d3b85a0381b4444',
+      WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+      ROUTER_ADDRESS: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
+      USDT_ADDRESS: '0x55d398326f99059fF775485246999027B3197955', // BSC USDT
+      ETH_ADDRESS: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+      BTC_ADDRESS: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
+      
+      // Token configuration
+      TOKENS: {
+        'BNB': { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', icon: 'assets/icons/bnb_logo.png', decimals: 18 },
+        'TAURUS': { address: '0x05008b299d880eeb424f1dd84d3b85a0381b4444', icon: 'assets/icons/taurus_logo.png', decimals: 18 },
+        'USDT': { address: '0x55d398326f99059fF775485246999027B3197955', icon: 'assets/icons/usdt_logo.png', decimals: 6 },
+        'ETH': { address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8', icon: 'assets/icons/eth_logo.png', decimals: 18 },
+        'BTC': { address: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c', icon: 'assets/icons/btc_logo.png', decimals: 18 },
+        'ADA': { address: '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47', icon: 'assets/icons/ada_logo.png', decimals: 18 },
+        'SOL': { address: '0x570a5d26f7765ecb712c0924e4de545b89fd43df', icon: 'assets/icons/sol_logo.png', decimals: 18 },
+        'DOT': { address: '0x7083609fce4d1d8dc0c979aab8c869ea2c873402', icon: 'assets/icons/dot_logo.png', decimals: 18 },
+        'AVAX': { address: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041', icon: 'assets/icons/avax_logo.png', decimals: 18 },
+        'MATIC': { address: '0xcc42724c6683b7e57334c4e856f4c9965ed682bd', icon: 'assets/icons/matic_logo.png', decimals: 18 },
+        'LINK': { address: '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd', icon: 'assets/icons/link_logo.png', decimals: 18 },
+        'UNI': { address: '0xbf5140a22578168fd562dccf235e5d43a02ce9b1', icon: 'assets/icons/uni_logo.png', decimals: 18 },
+        'AAVE': { address: '0xfb6115445bff7b52feb98650c87f44907e58f802', icon: 'assets/icons/aave_logo.png', decimals: 18 },
+        'SUSHI': { address: '0x947950bcc74888a40ffa2593c57986f01691a983', icon: 'assets/icons/sushi_logo.png', decimals: 18 },
+        'COMP': { address: '0x52ce071bd9b1c4b00a0b92d298c512478cad67e8', icon: 'assets/icons/comp_logo.png', decimals: 18 }
+      },
+      
+      // Router ABI (simplified)
+      ROUTER_ABI: [
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
+            { "internalType": "address[]", "name": "path", "type": "address[]" },
+            { "internalType": "address", "name": "to", "type": "address" },
+            { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+          ],
+          "name": "swapExactETHForTokens",
+          "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+          "stateMutability": "payable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
+            { "internalType": "address[]", "name": "path", "type": "address[]" },
+            { "internalType": "address", "name": "to", "type": "address" },
+            { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+          ],
+          "name": "swapExactTokensForETH",
+          "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
+            { "internalType": "address[]", "name": "path", "type": "address[]" },
+            { "internalType": "address", "name": "to", "type": "address" },
+            { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+          ],
+          "name": "swapExactTokensForTokens",
+          "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "internalType": "address[]", "name": "path", "type": "address[]" }
+          ],
+          "name": "getAmountsOut",
+          "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+            { "internalType": "address[]", "name": "path", "type": "address[]" }
+          ],
+          "name": "getAmountsIn",
+          "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ],
+      
+      // ERC20 ABI (simplified)
+      ERC20_ABI: [
+        {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"},
+        {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
+        {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},
+        {"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"type":"function"}
+      ]
+    };
+
+    // ==================== GLOBAL VARIABLES ====================
+    let web3 = null;
+    let accounts = [];
+    let router = null;
+    let isUpdatingFrom = false;
+    let isUpdatingTo = false;
+    let currentPrices = {};
+
+    // ==================== UTILITY FUNCTIONS ====================
+    
+    // Input validation
+    function isValidNumberInput(value) {
+      return /^\d*(\.\d{0,6})?$/.test(value);
+    }
+
+    // Get current token symbols
+    function getFromSymbol() {
+      return document.getElementById('from-token-symbol').textContent.trim();
+    }
+
+    function getToSymbol() {
+      return document.getElementById('to-token-symbol').textContent.trim();
+    }
+
+    // Get token address
+    function getTokenAddress(symbol) {
+      const address = CONFIG.TOKENS[symbol]?.address;
+      if (address && web3) {
+        try {
+          return web3.utils.toChecksumAddress(address);
+        } catch (error) {
+          return address;
+        }
+      }
+      return address;
+    }
+
+    // Get token decimals
+    function getTokenDecimals(symbol) {
+      return CONFIG.TOKENS[symbol]?.decimals || 18;
+    }
+
+    // Format number with proper decimals
+    function formatNumber(value, decimals = 4) {
+      return parseFloat(value).toFixed(decimals);
+    }
+
+    // Show error message
+    function showError(message) {
+      console.error('Error:', message);
+      // Could add toast notification here
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      console.log('Success:', message);
+      // Could add toast notification here
+    }
+
+    // ==================== WEB3 INITIALIZATION ====================
+    
+    async function initializeWeb3() {
+      if (!window.ethereum) {
+        showError('MetaMask is not installed');
+        return false;
+      }
+
       try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd');
-        const data = await response.json();
+        web3 = new Web3(window.ethereum);
+        router = new web3.eth.Contract(CONFIG.ROUTER_ABI, CONFIG.ROUTER_ADDRESS);
         
-        // Update market stats bar
-        document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
-        document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
-        document.getElementById('bnb-price').textContent = '$' + data.binancecoin.usd.toLocaleString();
+        // Listen for account changes
+        window.ethereum.on('accountsChanged', handleAccountsChanged);
+        window.ethereum.on('chainChanged', () => window.location.reload());
         
-        // Update price cards
-        document.getElementById('eth-usdt-price').textContent = '$' + data.ethereum.usd.toLocaleString();
-        document.getElementById('btc-usdt-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
-        
-        // Update exchange rate
-        document.getElementById('exchange-rate').textContent = '1 ETH = ' + data.ethereum.usd.toLocaleString() + ' USDT';
-        
-        // Calculate and set to-amount based on from-amount
-        document.getElementById('from-amount').addEventListener('input', function() {
-          const fromAmount = parseFloat(this.value) || 0;
-          document.getElementById('to-amount').value = (fromAmount * data.ethereum.usd).toFixed(2);
-        });
-        
-        // Calculate and set from-amount based on to-amount
-        document.getElementById('to-amount').addEventListener('input', function() {
-          const toAmount = parseFloat(this.value) || 0;
-          document.getElementById('from-amount').value = (toAmount / data.ethereum.usd).toFixed(6);
-        });
+        return true;
       } catch (error) {
-        console.error('Error fetching cryptocurrency prices:', error);
+        showError('Failed to initialize Web3: ' + error.message);
+        return false;
       }
     }
+
+    async function handleAccountsChanged(newAccounts) {
+      accounts = newAccounts;
+      if (accounts.length > 0) {
+        await updateBalance();
+        updateSwapButton();
+      } else {
+        resetUI();
+      }
+    }
+
+    // ==================== WALLET CONNECTION ====================
     
-    // Swap direction button functionality
-    document.getElementById('swap-direction').addEventListener('click', function() {
-      // Get current values
+    async function connectWallet() {
+      if (!web3) {
+        const initialized = await initializeWeb3();
+        if (!initialized) return false;
+      }
+
+      try {
+        accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          await updateBalance();
+          updateSwapButton();
+          return true;
+        }
+        return false;
+      } catch (error) {
+        showError('Failed to connect wallet: ' + error.message);
+        return false;
+      }
+    }
+
+    // ==================== BALANCE MANAGEMENT ====================
+    
+    async function updateBalance() {
+      if (!web3 || !accounts[0]) {
+        document.getElementById('from-balance').textContent = 'Balance: -- BNB';
+        return;
+      }
+
+      try {
+        const symbol = getFromSymbol();
+        let balance = 0;
+
+        if (symbol === 'BNB') {
+          const balanceWei = await web3.eth.getBalance(accounts[0]);
+          balance = web3.utils.fromWei(balanceWei, 'ether');
+        } else {
+          const tokenAddress = getTokenAddress(symbol);
+          if (!tokenAddress) return;
+
+          const tokenContract = new web3.eth.Contract(CONFIG.ERC20_ABI, tokenAddress);
+          const [rawBalance, decimals] = await Promise.all([
+            tokenContract.methods.balanceOf(accounts[0]).call(),
+            tokenContract.methods.decimals().call()
+          ]);
+          balance = parseFloat(rawBalance.toString()) / Math.pow(10, decimals);
+        }
+
+        document.getElementById('from-balance').textContent = `Balance: ${formatNumber(balance, 4)} ${symbol}`;
+      } catch (error) {
+        showError('Failed to update balance: ' + error.message);
+      }
+    }
+
+    // ==================== PRICE CALCULATION ====================
+    
+    async function calculateSwapAmount(fromAmount, fromSymbol, toSymbol) {
+      if (!web3 || !fromAmount || fromAmount <= 0) {
+        return 0;
+      }
+
+      try {
+        const fromAddress = getTokenAddress(fromSymbol);
+        const toAddress = getTokenAddress(toSymbol);
+        
+        if (!fromAddress || !toAddress) {
+          return 0;
+        }
+
+        // Ensure addresses are properly formatted
+        const path = [web3.utils.toChecksumAddress(fromAddress), web3.utils.toChecksumAddress(toAddress)];
+        
+        // Handle different token decimals correctly
+        let amountIn;
+        if (fromSymbol === 'BNB') {
+          amountIn = web3.utils.toWei(fromAmount.toString(), 'ether');
+        } else {
+          const fromDecimals = getTokenDecimals(fromSymbol);
+          // Use web3.utils.toBN for better precision handling
+          const multiplier = web3.utils.toBN(10).pow(web3.utils.toBN(fromDecimals));
+          const amountBN = web3.utils.toBN(Math.floor(Number(fromAmount) * Math.pow(10, 6))); // Use 6 decimals for calculation
+          amountIn = amountBN.mul(multiplier).div(web3.utils.toBN(10).pow(web3.utils.toBN(6))).toString();
+        }
+        
+        const amounts = await router.methods.getAmountsOut(amountIn, path).call();
+        
+        // Convert BigNumber to string to avoid precision issues
+        const rawAmountOut = amounts[1].toString();
+        // Router always returns amounts in 18 decimals, regardless of token decimals
+        const toAmount = parseFloat(rawAmountOut) / Math.pow(10, 18);
+        
+        return toAmount;
+      } catch (error) {
+        showError('Failed to calculate swap amount: ' + error.message);
+        return 0;
+      }
+    }
+
+    async function calculateReverseAmount(toAmount, fromSymbol, toSymbol) {
+      if (!web3 || !toAmount || toAmount <= 0) {
+        return 0;
+      }
+
+      try {
+        const fromAddress = getTokenAddress(fromSymbol);
+        const toAddress = getTokenAddress(toSymbol);
+        
+        if (!fromAddress || !toAddress) {
+          return 0;
+        }
+
+        // Ensure addresses are properly formatted
+        const path = [web3.utils.toChecksumAddress(fromAddress), web3.utils.toChecksumAddress(toAddress)];
+        
+        // Handle different token decimals correctly
+        let amountOut;
+        if (toSymbol === 'BNB') {
+          amountOut = web3.utils.toWei(toAmount.toString(), 'ether');
+        } else {
+          const toDecimals = getTokenDecimals(toSymbol);
+          // Use web3.utils.toBN for better precision handling
+          const multiplier = web3.utils.toBN(10).pow(web3.utils.toBN(toDecimals));
+          const amountBN = web3.utils.toBN(Math.floor(Number(toAmount) * Math.pow(10, 6))); // Use 6 decimals for calculation
+          amountOut = amountBN.mul(multiplier).div(web3.utils.toBN(10).pow(web3.utils.toBN(6))).toString();
+        }
+        
+        const amounts = await router.methods.getAmountsIn(amountOut, path).call();
+        
+        // Convert BigNumber to string to avoid precision issues
+        const rawAmountIn = amounts[0].toString();
+        // Router always returns amounts in 18 decimals, regardless of token decimals
+        const fromAmount = parseFloat(rawAmountIn) / Math.pow(10, 18);
+        
+        return fromAmount;
+      } catch (error) {
+        showError('Failed to calculate reverse amount: ' + error.message);
+        return 0;
+      }
+    }
+
+    // ==================== UI UPDATES ====================
+    
+    function updateExchangeRate(fromAmount, toAmount, fromSymbol, toSymbol) {
+      if (fromAmount > 0 && toAmount > 0) {
+        const rate = toAmount / fromAmount;
+        document.getElementById('exchange-rate').textContent = 
+          `1 ${fromSymbol} = ${formatNumber(rate, 6)} ${toSymbol}`;
+      }
+    }
+
+    function updateSwapButton() {
+      const swapBtn = document.getElementById('swap-btn');
+      const swapBtnText = document.getElementById('swap-btn-text');
+      
+      if (accounts.length > 0) {
+        swapBtnText.textContent = 'Swap Now';
+        swapBtn.disabled = false;
+      } else {
+        swapBtnText.textContent = 'Connecting...';
+        swapBtn.disabled = true;
+      }
+    }
+
+    function resetUI() {
+      document.getElementById('from-amount').value = '';
+      document.getElementById('to-amount').value = '';
+      document.getElementById('from-balance').textContent = 'Balance: -- BNB';
+      updateSwapButton();
+    }
+
+    // ==================== EVENT HANDLERS ====================
+    
+    // From amount input handler
+    async function handleFromAmountInput() {
+      if (isUpdatingFrom) return;
+      
+      const input = document.getElementById('from-amount');
+      const value = input.value;
+      
+      if (!isValidNumberInput(value)) {
+        input.value = value.slice(0, -1);
+        return;
+      }
+
+      if (!value || value <= 0) {
+        isUpdatingTo = true;
+        document.getElementById('to-amount').value = '';
+        isUpdatingTo = false;
+        return;
+      }
+
+      const fromSymbol = getFromSymbol();
+      const toSymbol = getToSymbol();
+      
+      const toAmount = await calculateSwapAmount(value, fromSymbol, toSymbol);
+      
+      isUpdatingTo = true;
+      document.getElementById('to-amount').value = formatNumber(toAmount, 6);
+      updateExchangeRate(value, toAmount, fromSymbol, toSymbol);
+      isUpdatingTo = false;
+    }
+
+    // To amount input handler
+    async function handleToAmountInput() {
+      if (isUpdatingTo) return;
+      
+      const input = document.getElementById('to-amount');
+      const value = input.value;
+      
+      if (!isValidNumberInput(value)) {
+        input.value = value.slice(0, -1);
+        return;
+      }
+
+      if (!value || value <= 0) {
+        isUpdatingFrom = true;
+        document.getElementById('from-amount').value = '';
+        isUpdatingFrom = false;
+        return;
+      }
+
+      const fromSymbol = getFromSymbol();
+      const toSymbol = getToSymbol();
+      
+      const fromAmount = await calculateReverseAmount(value, fromSymbol, toSymbol);
+      
+      isUpdatingFrom = true;
+      document.getElementById('from-amount').value = formatNumber(fromAmount, 6);
+      updateExchangeRate(fromAmount, value, fromSymbol, toSymbol);
+      isUpdatingFrom = false;
+    }
+
+    // Swap direction handler
+    function handleSwapDirection() {
       const fromTokenImg = document.getElementById('from-token-img').src;
       const fromTokenSymbol = document.getElementById('from-token-symbol').textContent;
       const fromAmount = document.getElementById('from-amount').value;
@@ -310,17 +715,334 @@
       document.getElementById('to-token-symbol').textContent = fromTokenSymbol;
       document.getElementById('to-amount').value = fromAmount;
       
-      // Update exchange rate
-      const currentRate = document.getElementById('exchange-rate').textContent;
-      const parts = currentRate.split('=');
-      if (parts.length === 2) {
-        const newRate = '1 ' + toTokenSymbol + ' = ' + (1 / parseFloat(parts[1])).toFixed(6) + ' ' + fromTokenSymbol;
-        document.getElementById('exchange-rate').textContent = newRate;
+      // Update balance and recalculate
+      updateBalance();
+      if (fromAmount) {
+        handleFromAmountInput();
       }
-    });
+    }
+
+    // Max button handler
+    async function handleMaxButton() {
+      const maxBtn = document.getElementById('max-btn');
+      maxBtn.disabled = true;
+      maxBtn.textContent = '...';
+      
+      try {
+        if (!web3 || !accounts[0]) {
+          const connected = await connectWallet();
+          if (!connected) {
+            showError('Please connect your wallet first');
+            return;
+          }
+        }
+
+        const symbol = getFromSymbol();
+        let balance = 0;
+
+        if (symbol === 'BNB') {
+          const balanceWei = await web3.eth.getBalance(accounts[0]);
+          balance = web3.utils.fromWei(balanceWei, 'ether');
+        } else {
+          const tokenAddress = getTokenAddress(symbol);
+          if (!tokenAddress) throw new Error('Token not supported');
+
+          const tokenContract = new web3.eth.Contract(CONFIG.ERC20_ABI, tokenAddress);
+          const [rawBalance, decimals] = await Promise.all([
+            tokenContract.methods.balanceOf(accounts[0]).call(),
+            tokenContract.methods.decimals().call()
+          ]);
+          balance = parseFloat(rawBalance.toString()) / Math.pow(10, decimals);
+        }
+
+        document.getElementById('from-amount').value = formatNumber(balance, 6);
+        handleFromAmountInput();
+      } catch (error) {
+        showError('Failed to get max balance: ' + error.message);
+      } finally {
+        maxBtn.textContent = 'Max';
+        maxBtn.disabled = false;
+      }
+    }
+
+    // Swap form submission
+    async function handleSwapSubmit(event) {
+      event.preventDefault();
+      
+      const swapBtn = document.getElementById('swap-btn');
+      const swapBtnText = document.getElementById('swap-btn-text');
+      
+      if (swapBtn.disabled) return;
+      
+      // Ensure wallet is connected
+      if (accounts.length === 0) {
+        const connected = await connectWallet();
+        if (!connected) {
+          showError('Please connect your wallet first');
+          return;
+        }
+      }
+
+      const fromAmount = document.getElementById('from-amount').value;
+      const toAmount = document.getElementById('to-amount').value;
+      const fromSymbol = getFromSymbol();
+      const toSymbol = getToSymbol();
+
+      if (!fromAmount || fromAmount <= 0) {
+        showError('Please enter a valid amount');
+        return;
+      }
+
+      // Disable button and show loading
+      swapBtn.disabled = true;
+      swapBtnText.innerHTML = '<span class="loading-spinner me-2"></span>Processing...';
+
+      try {
+        const path = [getTokenAddress(fromSymbol), getTokenAddress(toSymbol)];
+        const deadline = Math.floor(Date.now() / 1000) + 600; // 10 minutes
+        const minOut = 0; // No slippage protection for demo
+
+        if (fromSymbol === 'BNB') {
+          // Swap BNB for tokens
+          await router.methods.swapExactETHForTokens(
+            minOut,
+            path,
+            accounts[0],
+            deadline
+          ).send({
+            from: accounts[0],
+            value: web3.utils.toWei(fromAmount, 'ether')
+          });
+        } else if (toSymbol === 'BNB') {
+          // Swap tokens for BNB
+          await handleTokenToBNBSwap(fromAmount, fromSymbol, path, deadline, minOut);
+        } else {
+          // Swap tokens for tokens
+          await handleTokenToTokenSwap(fromAmount, fromSymbol, path, deadline, minOut);
+        }
+
+        // Success
+        swapBtnText.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-2"></i>Success!</span>';
+        swapBtn.classList.add('btn-success');
+        
+        // Reset form and update balance
+        setTimeout(() => {
+          document.getElementById('from-amount').value = '';
+          document.getElementById('to-amount').value = '';
+          updateBalance();
+          swapBtnText.textContent = 'Swap Now';
+          swapBtn.classList.remove('btn-success');
+          swapBtn.disabled = false;
+        }, 2000);
+
+      } catch (error) {
+        showError('Swap failed: ' + error.message);
+        swapBtnText.textContent = 'Swap Now';
+        swapBtn.disabled = false;
+      }
+    }
+
+    // Handle token to BNB swap
+    async function handleTokenToBNBSwap(fromAmount, fromSymbol, path, deadline, minOut) {
+      const tokenAddress = getTokenAddress(fromSymbol);
+      const tokenContract = new web3.eth.Contract(CONFIG.ERC20_ABI, tokenAddress);
+      
+      const decimals = await tokenContract.methods.decimals().call();
+      
+      // Handle different token decimals correctly
+      let amountIn;
+      if (decimals == 18) {
+        amountIn = web3.utils.toWei(fromAmount, 'ether');
+      } else {
+        // Use web3.utils.toBN for better precision handling
+        const multiplier = web3.utils.toBN(10).pow(web3.utils.toBN(decimals));
+        const amountBN = web3.utils.toBN(Math.floor(Number(fromAmount) * Math.pow(10, 6))); // Use 6 decimals for calculation
+        amountIn = amountBN.mul(multiplier).div(web3.utils.toBN(10).pow(web3.utils.toBN(6))).toString();
+      }
+      
+      // Check and approve allowance
+      const allowance = await tokenContract.methods.allowance(accounts[0], CONFIG.ROUTER_ADDRESS).call();
+      if (web3.utils.toBN(allowance).lt(web3.utils.toBN(amountIn))) {
+        await tokenContract.methods.approve(CONFIG.ROUTER_ADDRESS, amountIn).send({ from: accounts[0] });
+      }
+      
+      // Execute swap
+      await router.methods.swapExactTokensForETH(
+        amountIn,
+        minOut,
+        path,
+        accounts[0],
+        deadline
+      ).send({ from: accounts[0] });
+    }
+
+    // Handle token to token swap
+    async function handleTokenToTokenSwap(fromAmount, fromSymbol, path, deadline, minOut) {
+      const tokenAddress = getTokenAddress(fromSymbol);
+      const tokenContract = new web3.eth.Contract(CONFIG.ERC20_ABI, tokenAddress);
+      
+      const decimals = await tokenContract.methods.decimals().call();
+      
+      // Handle different token decimals correctly
+      let amountIn;
+      if (decimals == 18) {
+        amountIn = web3.utils.toWei(fromAmount, 'ether');
+      } else {
+        // Use web3.utils.toBN for better precision handling
+        const multiplier = web3.utils.toBN(10).pow(web3.utils.toBN(decimals));
+        const amountBN = web3.utils.toBN(Math.floor(Number(fromAmount) * Math.pow(10, 6))); // Use 6 decimals for calculation
+        amountIn = amountBN.mul(multiplier).div(web3.utils.toBN(10).pow(web3.utils.toBN(6))).toString();
+      }
+      
+      // Check and approve allowance
+      const allowance = await tokenContract.methods.allowance(accounts[0], CONFIG.ROUTER_ADDRESS).call();
+      if (web3.utils.toBN(allowance).lt(web3.utils.toBN(amountIn))) {
+        await tokenContract.methods.approve(CONFIG.ROUTER_ADDRESS, amountIn).send({ from: accounts[0] });
+      }
+      
+      // Execute swap
+      await router.methods.swapExactTokensForTokens(
+        amountIn,
+        minOut,
+        path,
+        accounts[0],
+        deadline
+      ).send({ from: accounts[0] });
+    }
+
+    // ==================== PRICE FETCHING ====================
     
-    // Fetch prices when page loads
-    document.addEventListener('DOMContentLoaded', fetchCryptoPrices);
+    async function fetchCryptoPrices() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd');
+        const data = await response.json();
+        
+        // Update market stats bar
+        document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
+        document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
+        document.getElementById('bnb-price').textContent = '$' + data.binancecoin.usd.toLocaleString();
+        
+        // Update price cards
+        document.getElementById('eth-usdt-price').textContent = '$' + data.ethereum.usd.toLocaleString();
+        document.getElementById('bnb-usdt-price').textContent = '$' + data.binancecoin.usd.toLocaleString();
+        
+        // Store prices for later use
+        currentPrices = data;
+        
+      } catch (error) {
+        showError('Failed to fetch prices: ' + error.message);
+      }
+    }
+
+    // ==================== QUICK PAIR SETTINGS ====================
+    
+    function setDefaultPair() {
+      document.getElementById('from-token-img').src = CONFIG.TOKENS.BNB.icon;
+      document.getElementById('from-token-symbol').textContent = 'BNB';
+      document.getElementById('to-token-img').src = CONFIG.TOKENS.TAURUS.icon;
+      document.getElementById('to-token-symbol').textContent = 'TAURUS';
+      
+      document.getElementById('from-amount').value = '';
+      document.getElementById('to-amount').value = '';
+      updateBalance();
+    }
+
+    function setEthUsdtPair() {
+      document.getElementById('from-token-img').src = CONFIG.TOKENS.ETH.icon;
+      document.getElementById('from-token-symbol').textContent = 'ETH';
+      document.getElementById('to-token-img').src = CONFIG.TOKENS.USDT.icon;
+      document.getElementById('to-token-symbol').textContent = 'USDT';
+      
+      document.getElementById('from-amount').value = '';
+      document.getElementById('to-amount').value = '';
+      updateBalance();
+    }
+
+    function setBnbUsdtPair() {
+      document.getElementById('from-token-img').src = CONFIG.TOKENS.BNB.icon;
+      document.getElementById('from-token-symbol').textContent = 'BNB';
+      document.getElementById('to-token-img').src = CONFIG.TOKENS.USDT.icon;
+      document.getElementById('to-token-symbol').textContent = 'USDT';
+      
+      document.getElementById('from-amount').value = '';
+      document.getElementById('to-amount').value = '';
+      updateBalance();
+    }
+
+    // Function to set token pair based on URL parameter
+    function setTokenPairFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenSymbol = urlParams.get('token');
+      const pairParam = urlParams.get('pair');
+      
+      // Handle special BNB/USDT pair
+      if (pairParam === 'BNB_USDT') {
+        document.getElementById('from-token-img').src = CONFIG.TOKENS.BNB.icon;
+        document.getElementById('from-token-symbol').textContent = 'BNB';
+        document.getElementById('to-token-img').src = CONFIG.TOKENS.USDT.icon;
+        document.getElementById('to-token-symbol').textContent = 'USDT';
+        
+        document.getElementById('from-amount').value = '';
+        document.getElementById('to-amount').value = '';
+        updateBalance();
+        return true;
+      }
+      
+      // Handle regular token parameter
+      if (tokenSymbol && CONFIG.TOKENS[tokenSymbol]) {
+        // Set from token to BNB and to token to the selected token
+        document.getElementById('from-token-img').src = CONFIG.TOKENS.BNB.icon;
+        document.getElementById('from-token-symbol').textContent = 'BNB';
+        
+        // Set to token icon and symbol
+        const tokenConfig = CONFIG.TOKENS[tokenSymbol];
+        document.getElementById('to-token-img').src = tokenConfig.icon;
+        document.getElementById('to-token-symbol').textContent = tokenSymbol;
+        
+        document.getElementById('from-amount').value = '';
+        document.getElementById('to-amount').value = '';
+        updateBalance();
+        return true;
+      }
+      return false;
+    }
+
+
+
+    // ==================== INITIALIZATION ====================
+    
+    async function initialize() {
+      // Initialize Web3
+      await initializeWeb3();
+      
+      // Check URL parameters first, then set default pair
+      const tokenSetFromURL = setTokenPairFromURL();
+      if (!tokenSetFromURL) {
+        setDefaultPair();
+      }
+      
+      // Fetch initial prices
+      await fetchCryptoPrices();
+      
+      // Auto connect wallet on page load
+      await connectWallet();
+      
+      // Set up event listeners
+      document.getElementById('from-amount').addEventListener('input', handleFromAmountInput);
+      document.getElementById('to-amount').addEventListener('input', handleToAmountInput);
+      document.getElementById('swap-direction').addEventListener('click', handleSwapDirection);
+      document.getElementById('max-btn').addEventListener('click', handleMaxButton);
+      document.getElementById('swap-form').addEventListener('submit', handleSwapSubmit);
+      
+      // Update UI
+      updateSwapButton();
+      
+      // Set up price refresh interval
+      setInterval(fetchCryptoPrices, 30000); // Refresh every 30 seconds
+    }
+
+    // Start initialization when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initialize);
   </script>
 </body>
 </html> 

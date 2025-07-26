@@ -44,6 +44,65 @@
       top: 15px;
       right: 15px;
     }
+    
+    /* Pagination styling - Force visibility */
+    .pagination {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .pagination .page-link {
+      background-color: var(--taurus-card) !important;
+      border-color: var(--taurus-border) !important;
+      color: var(--taurus-text-primary) !important;
+      transition: all 0.3s ease;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .pagination .page-link:hover {
+      background-color: var(--taurus-gold) !important;
+      border-color: var(--taurus-gold) !important;
+      color: var(--taurus-black) !important;
+    }
+    
+    .pagination .page-item.active .page-link {
+      background-color: var(--taurus-gold) !important;
+      border-color: var(--taurus-gold) !important;
+      color: var(--taurus-black) !important;
+    }
+    
+    .pagination .page-item.disabled .page-link {
+      background-color: rgba(30, 32, 38, 0.5) !important;
+      border-color: var(--taurus-border) !important;
+      color: var(--taurus-text-secondary) !important;
+      cursor: not-allowed;
+    }
+    
+    /* Ensure pagination container is visible */
+    .pagination-container {
+      display: flex !important;
+      justify-content: center !important;
+      margin-top: 2rem !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Token icon fallback */
+    .token-icon-fallback {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--taurus-gold), #ffd700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--taurus-black);
+      font-weight: bold;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -130,7 +189,7 @@
               <h5 class="card-title gold-gradient">Ethereum</h5>
               <h6 class="text-secondary mb-3">ETH</h6>
               <p class="card-text fs-4 fw-bold mb-2" id="eth-price">$3,250.12</p>
-              <a href="https://taurus-dex.github.io/" class="btn btn-sm btn-outline-warning w-100">Trade</a>
+              <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="tradeToken('ETH')">Trade</button>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 fade-in" style="animation-delay: 0.2s;">
@@ -142,7 +201,7 @@
               <h5 class="card-title gold-gradient">Bitcoin</h5>
               <h6 class="text-secondary mb-3">BTC</h6>
               <p class="card-text fs-4 fw-bold mb-2" id="btc-price">$48,900.00</p>
-              <a href="https://taurus-dex.github.io/" class="btn btn-sm btn-outline-warning w-100">Trade</a>
+              <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="tradeToken('BTC')">Trade</button>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 fade-in" style="animation-delay: 0.3s;">
@@ -154,7 +213,7 @@
               <h5 class="card-title gold-gradient">Binance Coin</h5>
               <h6 class="text-secondary mb-3">BNB</h6>
               <p class="card-text fs-4 fw-bold mb-2" id="bnb-price">$420.00</p>
-              <a href="https://taurus-dex.github.io/" class="btn btn-sm btn-outline-warning w-100">Trade</a>
+              <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="tradeToken('BNB')">Trade</button>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 fade-in" style="animation-delay: 0.4s;">
@@ -166,7 +225,7 @@
               <h5 class="card-title gold-gradient">Tether</h5>
               <h6 class="text-secondary mb-3">USDT</h6>
               <p class="card-text fs-4 fw-bold mb-2" id="usdt-price">$1.00</p>
-              <a href="https://taurus-dex.github.io/" class="btn btn-sm btn-outline-warning w-100">Trade</a>
+              <button type="button" class="btn btn-sm btn-outline-warning w-100" onclick="tradeToken('USDT')">Trade</button>
             </div>
           </div>
         </div>
@@ -176,12 +235,12 @@
       <div class="card p-4 fade-in" style="animation-delay: 0.5s;">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h3 class="gold-gradient mb-0">All Tokens</h3>
-          <div class="btn-group" role="group">
+          <!-- <div class="btn-group" role="group">
             <button type="button" class="btn btn-dark btn-sm active">All</button>
             <button type="button" class="btn btn-dark btn-sm">DeFi</button>
             <button type="button" class="btn btn-dark btn-sm">NFT</button>
             <button type="button" class="btn btn-dark btn-sm">Layer 2</button>
-          </div>
+          </div> -->
         </div>
         <div class="table-responsive">
           <table class="table table-dark table-hover align-middle mb-0">
@@ -196,9 +255,27 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
+            <tbody id="tokens-table-body">
+              <!-- Page 1 -->
+              <tr class="page-1-token">
                 <td>1</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img src="assets/icons/taurus_logo.png" alt="TAURUS" width="32" class="me-3 rounded-circle">
+                    <div>
+                      <div class="fw-bold">Taurus</div>
+                      <div class="text-secondary small">TAURUS</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="taurus-price">-</td>
+                <td id="taurus-change">-</td>
+                <td id="taurus-marketcap">-</td>
+                <td id="taurus-volume">-</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('TAURUS')">Trade</button></td>
+              </tr>
+              <tr class="page-1-token">
+                <td>2</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <img src="assets/icons/btc_logo.png" alt="BTC" width="32" class="me-3 rounded-circle">
@@ -208,14 +285,14 @@
                     </div>
                   </div>
                 </td>
-                <td id="btc-price-table">$48,900.00</td>
-                <td><span class="text-danger">-0.8%</span></td>
+                <td id="btc-price-table">-</td>
+                <td id="btc-change-table">-</td>
                 <td>$920.5B</td>
                 <td>$28.4B</td>
-                <td><a href="https://taurus-dex.github.io/" class="btn btn-sm btn-gold">Trade</a></td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('BTC')">Trade</button></td>
               </tr>
-              <tr>
-                <td>2</td>
+              <tr class="page-1-token">
+                <td>3</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <img src="assets/icons/eth_logo.png" alt="ETH" width="32" class="me-3 rounded-circle">
@@ -225,14 +302,14 @@
                     </div>
                   </div>
                 </td>
-                <td id="eth-price-table">$3,250.12</td>
-                <td><span class="text-success">+1.2%</span></td>
+                <td id="eth-price-table">-</td>
+                <td id="eth-change-table">-</td>
                 <td>$380.2B</td>
                 <td>$15.7B</td>
-                <td><a href="https://taurus-dex.github.io/" class="btn btn-sm btn-gold">Trade</a></td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('ETH')">Trade</button></td>
               </tr>
-              <tr>
-                <td>3</td>
+              <tr class="page-1-token">
+                <td>4</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <img src="assets/icons/bnb_logo.png" alt="BNB" width="32" class="me-3 rounded-circle">
@@ -242,14 +319,14 @@
                     </div>
                   </div>
                 </td>
-                <td id="bnb-price-table">$420.00</td>
-                <td><span class="text-success">+0.5%</span></td>
+                <td id="bnb-price-table">-</td>
+                <td id="bnb-change-table">-</td>
                 <td>$68.5B</td>
                 <td>$2.1B</td>
-                <td><a href="https://taurus-dex.github.io/" class="btn btn-sm btn-gold">Trade</a></td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('BNB')">Trade</button></td>
               </tr>
-              <tr>
-                <td>4</td>
+              <tr class="page-1-token">
+                <td>5</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <img src="assets/icons/usdt_logo.png" alt="USDT" width="32" class="me-3 rounded-circle">
@@ -259,14 +336,16 @@
                     </div>
                   </div>
                 </td>
-                <td id="usdt-price-table">$1.00</td>
-                <td><span class="text-success">+0.0%</span></td>
+                <td id="usdt-price-table">-</td>
+                <td id="usdt-change-table">-</td>
                 <td>$78.2B</td>
                 <td>$62.5B</td>
-                <td><a href="https://taurus-dex.github.io/" class="btn btn-sm btn-gold">Trade</a></td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('USDT')">Trade</button></td>
               </tr>
-              <tr>
-                <td>5</td>
+
+              <!-- Page 2 -->
+              <tr class="page-2-token" style="display: none;">
+                <td>6</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <img src="assets/icons/ada_logo.png" alt="ADA" width="32" class="me-3 rounded-circle">
@@ -276,23 +355,188 @@
                     </div>
                   </div>
                 </td>
-                <td id="ada-price-table">$1.20</td>
-                <td><span class="text-danger">-0.3%</span></td>
+                <td id="ada-price-table">-</td>
+                <td id="ada-change-table">-</td>
                 <td>$38.4B</td>
                 <td>$1.8B</td>
-                <td><a href="https://taurus-dex.github.io/" class="btn btn-sm btn-gold">Trade</a></td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('ADA')">Trade</button></td>
+              </tr>
+              <tr class="page-2-token" style="display: none;">
+                <td>7</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">SOL</div>
+                    <div>
+                      <div class="fw-bold">Solana</div>
+                      <div class="text-secondary small">SOL</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="sol-price-table">-</td>
+                <td id="sol-change-table">-</td>
+                <td>$42.8B</td>
+                <td>$3.2B</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('SOL')">Trade</button></td>
+              </tr>
+              <tr class="page-2-token" style="display: none;">
+                <td>8</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">DOT</div>
+                    <div>
+                      <div class="fw-bold">Polkadot</div>
+                      <div class="text-secondary small">DOT</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="dot-price-table">-</td>
+                <td id="dot-change-table">-</td>
+                <td>$9.8B</td>
+                <td>$450M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('DOT')">Trade</button></td>
+              </tr>
+              <tr class="page-2-token" style="display: none;">
+                <td>9</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">AVAX</div>
+                    <div>
+                      <div class="fw-bold">Avalanche</div>
+                      <div class="text-secondary small">AVAX</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="avax-price-table">-</td>
+                <td id="avax-change-table">-</td>
+                <td>$12.4B</td>
+                <td>$850M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('AVAX')">Trade</button></td>
+              </tr>
+              <tr class="page-2-token" style="display: none;">
+                <td>10</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">MATIC</div>
+                    <div>
+                      <div class="fw-bold">Polygon</div>
+                      <div class="text-secondary small">MATIC</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="matic-price-table">-</td>
+                <td id="matic-change-table">-</td>
+                <td>$8.9B</td>
+                <td>$680M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('MATIC')">Trade</button></td>
+              </tr>
+
+              <!-- Page 3 -->
+              <tr class="page-3-token" style="display: none;">
+                <td>11</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">LINK</div>
+                    <div>
+                      <div class="fw-bold">Chainlink</div>
+                      <div class="text-secondary small">LINK</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="link-price-table">-</td>
+                <td id="link-change-table">-</td>
+                <td>$9.2B</td>
+                <td>$520M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('LINK')">Trade</button></td>
+              </tr>
+              <tr class="page-3-token" style="display: none;">
+                <td>12</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">UNI</div>
+                    <div>
+                      <div class="fw-bold">Uniswap</div>
+                      <div class="text-secondary small">UNI</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="uni-price-table">-</td>
+                <td id="uni-change-table">-</td>
+                <td>$5.1B</td>
+                <td>$320M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('UNI')">Trade</button></td>
+              </tr>
+              <tr class="page-3-token" style="display: none;">
+                <td>13</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">AAVE</div>
+                    <div>
+                      <div class="fw-bold">Aave</div>
+                      <div class="text-secondary small">AAVE</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="aave-price-table">-</td>
+                <td id="aave-change-table">-</td>
+                <td>$4.2B</td>
+                <td>$280M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('AAVE')">Trade</button></td>
+              </tr>
+              <tr class="page-3-token" style="display: none;">
+                <td>14</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">SUSHI</div>
+                    <div>
+                      <div class="fw-bold">SushiSwap</div>
+                      <div class="text-secondary small">SUSHI</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="sushi-price-table">-</td>
+                <td id="sushi-change-table">-</td>
+                <td>$2.4B</td>
+                <td>$180M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('SUSHI')">Trade</button></td>
+              </tr>
+              <tr class="page-3-token" style="display: none;">
+                <td>15</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="token-icon-fallback me-3">COMP</div>
+                    <div>
+                      <div class="fw-bold">Compound</div>
+                      <div class="text-secondary small">COMP</div>
+                    </div>
+                  </div>
+                </td>
+                <td id="comp-price-table">-</td>
+                <td id="comp-change-table">-</td>
+                <td>$680M</td>
+                <td>$45M</td>
+                <td><button type="button" class="btn btn-sm btn-gold" onclick="tradeToken('COMP')">Trade</button></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-center mt-4">
+        <div style="display: flex !important; justify-content: center !important; margin-top: 2rem !important; visibility: visible !important; opacity: 1 !important; padding: 20px !important; background: rgba(30, 32, 38, 0.8) !important; border-radius: 10px !important;">
           <nav>
-            <ul class="pagination">
-              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <ul style="display: flex !important; list-style: none !important; margin: 0 !important; padding: 0 !important; gap: 5px !important;">
+              <li style="margin: 0 2px !important;">
+                <a href="#" id="prev-page" style="display: block !important; padding: 10px 15px !important; background-color: rgba(30, 32, 38, 0.8) !important; border: 1px solid #ffd700 !important; color: #ffd700 !important; text-decoration: none !important; border-radius: 5px !important; transition: all 0.3s ease !important;">Previous</a>
+              </li>
+              <li style="margin: 0 2px !important;">
+                <a href="#" data-page="1" style="display: block !important; padding: 10px 15px !important; background-color: #ffd700 !important; border: 1px solid #ffd700 !important; color: #000 !important; text-decoration: none !important; border-radius: 5px !important; transition: all 0.3s ease !important;">1</a>
+              </li>
+              <li style="margin: 0 2px !important;">
+                <a href="#" data-page="2" style="display: block !important; padding: 10px 15px !important; background-color: rgba(30, 32, 38, 0.8) !important; border: 1px solid #ffd700 !important; color: #ffd700 !important; text-decoration: none !important; border-radius: 5px !important; transition: all 0.3s ease !important;">2</a>
+              </li>
+              <li style="margin: 0 2px !important;">
+                <a href="#" data-page="3" style="display: block !important; padding: 10px 15px !important; background-color: rgba(30, 32, 38, 0.8) !important; border: 1px solid #ffd700 !important; color: #ffd700 !important; text-decoration: none !important; border-radius: 5px !important; transition: all 0.3s ease !important;">3</a>
+              </li>
+              <li style="margin: 0 2px !important;">
+                <a href="#" id="next-page" style="display: block !important; padding: 10px 15px !important; background-color: rgba(30, 32, 38, 0.8) !important; border: 1px solid #ffd700 !important; color: #ffd700 !important; text-decoration: none !important; border-radius: 5px !important; transition: all 0.3s ease !important;">Next</a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -331,32 +575,318 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
   <script>
+    // Pagination functionality
+    let currentPage = 1;
+    const tokensPerPage = 5;
+
+    function showPage(pageNumber) {
+      console.log('Showing page:', pageNumber);
+      
+      // Hide all token rows
+      document.querySelectorAll('[class*="page-"]').forEach(row => {
+        row.style.display = 'none';
+      });
+      
+      // Show tokens for current page
+      document.querySelectorAll(`.page-${pageNumber}-token`).forEach(row => {
+        row.style.display = 'table-row';
+      });
+      
+      // Update pagination buttons - using inline styles
+      document.querySelectorAll('[data-page]').forEach(button => {
+        button.style.backgroundColor = 'rgba(30, 32, 38, 0.8)';
+        button.style.color = '#ffd700';
+      });
+      
+      const activeButton = document.querySelector(`[data-page="${pageNumber}"]`);
+      if (activeButton) {
+        activeButton.style.backgroundColor = '#ffd700';
+        activeButton.style.color = '#000';
+      }
+      
+      // Update Previous/Next buttons
+      const prevButton = document.getElementById('prev-page');
+      const nextButton = document.getElementById('next-page');
+      
+      if (pageNumber === 1) {
+        prevButton.style.opacity = '0.5';
+        prevButton.style.cursor = 'not-allowed';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.cursor = 'pointer';
+      }
+      
+      if (pageNumber === 3) {
+        nextButton.style.opacity = '0.5';
+        nextButton.style.cursor = 'not-allowed';
+      } else {
+        nextButton.style.opacity = '1';
+        nextButton.style.cursor = 'pointer';
+      }
+      
+      currentPage = pageNumber;
+    }
+
+    // Web3 and PancakeSwap integration for Taurus token
+    async function fetchTaurusData() {
+      try {
+        // BSC主网
+        const web3 = new Web3('https://bsc-dataseed1.binance.org/');
+        const taurusAddress = '0x05008b299d880eeb424f1dd84d3b85a0381b4444';
+        const wbnbAddress   = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+        const usdtAddress   = '0x55d398326f99059fF775485246999027B3197955';
+        const pairAddress   = '0x1ac2b4E97114b1B9527868cC53Ea77312a93bbf7';
+        // ABI
+        const erc20Abi = [
+          {"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},
+          {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"}
+        ];
+        const pairAbi = [
+          {"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"type":"function"},
+          {"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"type":"function"},
+          {"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"type":"function"}
+        ];
+        const routerAbi = [
+          {"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"view","type":"function"}
+        ];
+        // 合约实例
+        const pairContract = new web3.eth.Contract(pairAbi, pairAddress);
+        const taurusContract = new web3.eth.Contract(erc20Abi, taurusAddress);
+        const routerContract = new web3.eth.Contract(routerAbi, '0x10ED43C718714eb63d5aA57B78B54704E256024E');
+        // 获取token0、token1和储备量
+        const [token0, token1, reserves] = await Promise.all([
+          pairContract.methods.token0().call(),
+          pairContract.methods.token1().call(),
+          pairContract.methods.getReserves().call()
+        ]);
+        let taurusReserve, wbnbReserve;
+        if (token0.toLowerCase() === taurusAddress.toLowerCase()) {
+          taurusReserve = reserves._reserve0;
+          wbnbReserve = reserves._reserve1;
+        } else {
+          taurusReserve = reserves._reserve1;
+          wbnbReserve = reserves._reserve0;
+        }
+        // 计算Taurus/BNB价格
+        const taurusDecimals = await taurusContract.methods.decimals().call();
+        const taurusAmount = web3.utils.toBN(taurusReserve).div(web3.utils.toBN(10 ** taurusDecimals));
+        const wbnbAmount = web3.utils.fromWei(wbnbReserve, 'ether');
+        const taurusPriceInBnb = parseFloat(wbnbAmount) / parseFloat(taurusAmount);
+        // 获取BNB/USDT价格
+        const bnbAmounts = await routerContract.methods.getAmountsOut(web3.utils.toWei('1', 'ether'), [wbnbAddress, usdtAddress]).call();
+        const bnbPrice = web3.utils.fromWei(bnbAmounts[1], 'ether');
+        // Taurus/USDT价格
+        const taurusPriceUsdt = taurusPriceInBnb * parseFloat(bnbPrice);
+        // 获取总供应量
+        const totalSupply = await taurusContract.methods.totalSupply().call();
+        const totalSupplyFormatted = web3.utils.fromWei(totalSupply, 'ether');
+        const marketCap = parseFloat(totalSupplyFormatted) * taurusPriceUsdt;
+        // --- Subgraph 查询 24h 涨跌幅和成交量 ---
+        let changeHtml = '<span class="text-secondary">--</span>';
+        let volumeHtml = '--';
+        try {
+          const subgraphQuery = `{
+            pair(id: \"${pairAddress.toLowerCase()}\") {
+              dayData(first: 2, orderBy: date, orderDirection: desc) {
+                date
+                dailyVolumeUSD
+                open
+                close
+              }
+            }
+          }`;
+          const resp = await fetch('https://corsproxy.io/?https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: subgraphQuery })
+          });
+          const subgraphData = await resp.json();
+          const dayData = subgraphData.data && subgraphData.data.pair && subgraphData.data.pair.dayData;
+          if (dayData && dayData.length >= 2) {
+            const price24hAgo = parseFloat(dayData[1].open);
+            const priceNow = parseFloat(dayData[0].close);
+            const change = ((priceNow - price24hAgo) / price24hAgo) * 100;
+            const volume = parseFloat(dayData[0].dailyVolumeUSD);
+            changeHtml = `<span class=\"${change >= 0 ? 'text-success' : 'text-danger'}\">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</span>`;
+            volumeHtml = '$' + volume.toLocaleString(undefined, { maximumFractionDigits: 0 });
+          }
+        } catch (e) {
+          // 保持默认 --
+        }
+        // 更新页面
+        document.getElementById('taurus-price').textContent = '$' + taurusPriceUsdt.toFixed(8);
+        document.getElementById('taurus-marketcap').textContent = '$' + formatNumber(marketCap);
+        document.getElementById('taurus-change').innerHTML = changeHtml;
+        document.getElementById('taurus-volume').textContent = volumeHtml;
+      } catch (error) {
+        console.error('Error fetching Taurus data:', error);
+        document.getElementById('taurus-price').textContent = '$0.000001';
+        document.getElementById('taurus-marketcap').textContent = '$500K';
+        document.getElementById('taurus-change').innerHTML = '<span class="text-secondary">--</span>';
+        document.getElementById('taurus-volume').textContent = '--';
+      }
+    }
+
+    // Helper function to format large numbers
+    function formatNumber(num) {
+      if (num >= 1e9) {
+        return (num / 1e9).toFixed(2) + 'B';
+      } else if (num >= 1e6) {
+        return (num / 1e6).toFixed(2) + 'M';
+      } else if (num >= 1e3) {
+        return (num / 1e3).toFixed(2) + 'K';
+      }
+      return num.toFixed(2);
+    }
+
     // Function to fetch cryptocurrency prices
     async function fetchCryptoPrices() {
       try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,tether,cardano&vs_currencies=usd');
+        // Fetch real prices for major cryptocurrencies
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,tether,cardano,solana,polkadot,avalanche-2,polygon,chainlink,uniswap,aave,sushi,compound&vs_currencies=usd&include_24hr_change=true');
         const data = await response.json();
         
         // Update card prices
-        document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
-        document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
-        document.getElementById('bnb-price').textContent = '$' + data.binancecoin.usd.toLocaleString();
-        document.getElementById('usdt-price').textContent = '$' + data.tether.usd.toLocaleString();
+        if (data.bitcoin) document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
+        if (data.ethereum) document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
+        if (data.binancecoin) document.getElementById('bnb-price').textContent = '$' + data.binancecoin.usd.toLocaleString();
+        if (data.tether) document.getElementById('usdt-price').textContent = '$' + data.tether.usd.toLocaleString();
         
-        // Update table prices
-        document.getElementById('btc-price-table').textContent = '$' + data.bitcoin.usd.toLocaleString();
-        document.getElementById('eth-price-table').textContent = '$' + data.ethereum.usd.toLocaleString();
-        document.getElementById('bnb-price-table').textContent = '$' + data.binancecoin.usd.toLocaleString();
-        document.getElementById('usdt-price-table').textContent = '$' + data.tether.usd.toLocaleString();
-        document.getElementById('ada-price-table').textContent = '$' + data.cardano.usd.toLocaleString();
+        // Update table prices and 24h changes
+        if (data.bitcoin) {
+          document.getElementById('btc-price-table').textContent = '$' + data.bitcoin.usd.toLocaleString();
+          document.getElementById('btc-change-table').innerHTML = `<span class="${data.bitcoin.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.bitcoin.usd_24h_change >= 0 ? '+' : ''}${data.bitcoin.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.ethereum) {
+          document.getElementById('eth-price-table').textContent = '$' + data.ethereum.usd.toLocaleString();
+          document.getElementById('eth-change-table').innerHTML = `<span class="${data.ethereum.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.ethereum.usd_24h_change >= 0 ? '+' : ''}${data.ethereum.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.binancecoin) {
+          document.getElementById('bnb-price-table').textContent = '$' + data.binancecoin.usd.toLocaleString();
+          document.getElementById('bnb-change-table').innerHTML = `<span class="${data.binancecoin.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.binancecoin.usd_24h_change >= 0 ? '+' : ''}${data.binancecoin.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.tether) {
+          document.getElementById('usdt-price-table').textContent = '$' + data.tether.usd.toLocaleString();
+          document.getElementById('usdt-change-table').innerHTML = `<span class="${data.tether.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.tether.usd_24h_change >= 0 ? '+' : ''}${data.tether.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.cardano) {
+          document.getElementById('ada-price-table').textContent = '$' + data.cardano.usd.toLocaleString();
+          document.getElementById('ada-change-table').innerHTML = `<span class="${data.cardano.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.cardano.usd_24h_change >= 0 ? '+' : ''}${data.cardano.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.solana) {
+          document.getElementById('sol-price-table').textContent = '$' + data.solana.usd.toLocaleString();
+          document.getElementById('sol-change-table').innerHTML = `<span class="${data.solana.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.solana.usd_24h_change >= 0 ? '+' : ''}${data.solana.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.polkadot) {
+          document.getElementById('dot-price-table').textContent = '$' + data.polkadot.usd.toLocaleString();
+          document.getElementById('dot-change-table').innerHTML = `<span class="${data.polkadot.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.polkadot.usd_24h_change >= 0 ? '+' : ''}${data.polkadot.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data['avalanche-2']) {
+          document.getElementById('avax-price-table').textContent = '$' + data['avalanche-2'].usd.toLocaleString();
+          document.getElementById('avax-change-table').innerHTML = `<span class="${data['avalanche-2'].usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data['avalanche-2'].usd_24h_change >= 0 ? '+' : ''}${data['avalanche-2'].usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.polygon) {
+          document.getElementById('matic-price-table').textContent = '$' + data.polygon.usd.toLocaleString();
+          document.getElementById('matic-change-table').innerHTML = `<span class="${data.polygon.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.polygon.usd_24h_change >= 0 ? '+' : ''}${data.polygon.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.chainlink) {
+          document.getElementById('link-price-table').textContent = '$' + data.chainlink.usd.toLocaleString();
+          document.getElementById('link-change-table').innerHTML = `<span class="${data.chainlink.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.chainlink.usd_24h_change >= 0 ? '+' : ''}${data.chainlink.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.uniswap) {
+          document.getElementById('uni-price-table').textContent = '$' + data.uniswap.usd.toLocaleString();
+          document.getElementById('uni-change-table').innerHTML = `<span class="${data.uniswap.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.uniswap.usd_24h_change >= 0 ? '+' : ''}${data.uniswap.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.aave) {
+          document.getElementById('aave-price-table').textContent = '$' + data.aave.usd.toLocaleString();
+          document.getElementById('aave-change-table').innerHTML = `<span class="${data.aave.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.aave.usd_24h_change >= 0 ? '+' : ''}${data.aave.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.sushi) {
+          document.getElementById('sushi-price-table').textContent = '$' + data.sushi.usd.toLocaleString();
+          document.getElementById('sushi-change-table').innerHTML = `<span class="${data.sushi.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.sushi.usd_24h_change >= 0 ? '+' : ''}${data.sushi.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        if (data.compound) {
+          document.getElementById('comp-price-table').textContent = '$' + data.compound.usd.toLocaleString();
+          document.getElementById('comp-change-table').innerHTML = `<span class="${data.compound.usd_24h_change >= 0 ? 'text-success' : 'text-danger'}">${data.compound.usd_24h_change >= 0 ? '+' : ''}${data.compound.usd_24h_change.toFixed(2)}%</span>`;
+        }
+        
       } catch (error) {
         console.error('Error fetching cryptocurrency prices:', error);
       }
     }
-    
-    // Fetch prices when page loads
-    document.addEventListener('DOMContentLoaded', fetchCryptoPrices);
+
+    // Function to handle trade button clicks
+    function tradeToken(symbol) {
+      // Special handling for BNB and USDT - always set to BNB/USDT pair
+      if (symbol === 'BNB' || symbol === 'USDT') {
+        window.location.href = `swap.html?pair=BNB_USDT`;
+      } else {
+        // For other tokens, redirect to swap page with token parameter
+        window.location.href = `swap.html?token=${encodeURIComponent(symbol)}`;
+      }
+    }
+
+    // Event listeners for pagination
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing pagination...');
+      
+      // Initialize first page
+      showPage(1);
+      
+      // Fetch Taurus data from blockchain
+      fetchTaurusData();
+      
+      // Fetch other cryptocurrency prices
+      fetchCryptoPrices();
+      
+      // Add event listeners for pagination
+      document.querySelectorAll('[data-page]').forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const pageNumber = parseInt(this.getAttribute('data-page'));
+          showPage(pageNumber);
+        });
+      });
+      
+      // Previous button
+      document.getElementById('prev-page').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (currentPage > 1) {
+          showPage(currentPage - 1);
+        }
+      });
+      
+      // Next button
+      document.getElementById('next-page').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (currentPage < 3) {
+          showPage(currentPage + 1);
+        }
+      });
+      
+      // All Tokens table row click: jump to swap.html?token=SYMBOL (strict version)
+      document.querySelectorAll('#tokens-table-body tr').forEach(row => {
+        row.addEventListener('click', function(e) {
+          // Only allow jump if not clicking an <a> element
+          if (e.target.closest('a')) return;
+          const symbolElem = this.querySelector('.text-secondary.small');
+          if (symbolElem) {
+            const symbol = symbolElem.textContent.trim();
+            window.location.href = `swap.html?token=${encodeURIComponent(symbol)}`;
+          }
+        });
+      });
+      // Prevent propagation for Trade button
+      document.querySelectorAll('#tokens-table-body button').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+        });
+      });
+      
+      console.log('Pagination initialized successfully');
+    });
   </script>
 </body>
 </html> 
